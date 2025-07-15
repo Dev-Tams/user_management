@@ -13,6 +13,7 @@ type Admin struct{
 type Editor struct{
 	User
 	CanEdit bool
+	Section [] string
 }
 
 type Viewer struct{
