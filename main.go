@@ -17,4 +17,7 @@ func main() {
 
 	}
 	fmt.Println(user, "\n", user.Greet(), "\n", admin, "\n", admin.Greet())
+
+	 RoleChecker(admin.User)
+	// fmt.Println(c)
 }
