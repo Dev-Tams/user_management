@@ -6,7 +6,7 @@ func main() {
 	
 
 	user := User{
-		Name: "Tami", Email: "tamimail.com", ID: 4,
+		Name: "Tami", Email: "tami@mail.com", ID: 4,
 	}
 
 	editor := Editor{
@@ -35,7 +35,7 @@ func main() {
 		{Name: "John", Email: "johndoe@mail.com", ID: 6},
 		{Name: "Doe", Email: "Doe@mail.com", ID: 5},
 		{Name: "Mary", Email: "marydoe@mail.com", ID: 9},
-		{Name: "Tesla", Email: "tesla@mail.com", ID: 7},
+		{Name: "Tesla", Email: "teslamail.com", ID: 7},
 	}
 
 //range over users to check role	
@@ -43,12 +43,20 @@ func main() {
 		 RoleChecker(u)
 	}
 
+	for _, v := range users{
+		 _, err := IsValidEmail(v)
+		 if err != nil{
+			fmt.Printf("Wrong email for %v \n", v.Email)
+		 }else{
+			fmt.Println("checked mail for", v.Email)
+		 }
+	}
 //check users email
 	 _, err:= user.IsValidEmail(user.Email)
 	if err != nil{
 		fmt.Println("Wrong email", err)
 	}else{
-		fmt.Println(user)
+		fmt.Println("checked mail for", user)
 	}
 	//  RoleChecker(admin.User)
 	 

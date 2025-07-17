@@ -68,3 +68,17 @@ func (u User) IsValidEmail(e string) (string, error) {
 		return e, nil
 	}
 }
+
+
+func  IsValidEmail(e User) (string, error) {
+	x := len(e.Email)
+
+	if !strings.Contains(e.Email, "@") || !strings.Contains(e.Email, ".") {
+		return "", fmt.Errorf("email must contain '@' and '.'")
+	}
+	if x < 5 {
+		return "", fmt.Errorf(" Email is not valid")
+	} else {
+		return e.Email, nil
+	}
+}
