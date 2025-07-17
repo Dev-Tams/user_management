@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "errors"
 	"fmt"
 	"slices"
 	"strings"
@@ -35,13 +36,10 @@ func (v Viewer) ViewAccess() string {
 	return fmt.Sprintf("Access granted for %v", v.Name)
 }
 
-// . Create a Role Checker Function
-// A function that accepts any type (interface{} or any)
 
 // Uses type switches or type assertions to determine and print what role a user has
 
 func RoleChecker(role any) {
-	
 
 	switch r := role.(type) {
 	case User:
@@ -81,4 +79,27 @@ func  IsValidEmail(e User) (string, error) {
 	} else {
 		return e.Email, nil
 	}
+}
+
+//Checking all users and logging them in if cred matches
+// Check for empty fields.
+// Loop through all users to find a matching email.
+
+func Login(email, password string) (string, error){
+
+	if email == "" || password == "" {
+		return "", LoginError{Reason: "Fields cannot be empty, try again!"}
+	}
+
+	for _, user := range users{
+		if email == user.Email{
+			if password == user.Password{
+				return "login sucess", nil
+			}else{
+				return "", LoginError{Reason: "wrong email or password"}
+			}
+		}
+		
+	}
+		return "",  LoginError{Reason: "Email not found"}
 }
