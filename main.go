@@ -9,7 +9,7 @@ var users = []User{
 	{Name: "Tami", Email: "tami@mail.com", Password: "password", ID: 4},
 	{Name: "James", Email: "james4pf@mail.com", Password: "securepassword", ID: 8},
 	{Name: "John", Email: "johndoe@mail.com", Password: "securepassword", ID: 6},
-	{Name: "Doe", Email: "Doe@mail.com", Password: "securepassword", ID: 5},
+	{Name: "Doe", Email: "doe@mail.com", Password: "securepassword", ID: 5},
 	{Name: "Mary", Email: "marydoe@mail.com", Password: "securepassword", ID: 9},
 	{Name: "Tesla", Email: "teslamail.com", Password: "securepassword", ID: 7},
 }
@@ -45,7 +45,7 @@ func main() {
 
 	//range over users to check for error in mail
 	for _, v := range users {
-		_, err := IsValidEmail(v)
+		_, err := IsValidEmail(v.Email)
 		if err != nil {
 			fmt.Printf("Wrong email for %v \n", v.Email)
 		} else {
@@ -54,17 +54,17 @@ func main() {
 	}
 
 	//check users email
-	_, err := user.IsValidEmail(user.Email)
-	if err != nil {
-		fmt.Println("Wrong email", err)
-	} else {
-		fmt.Println("checked mail for", user)
-	}
+	// _, err := user.IsValidEmail(user.Email)
+	// if err != nil {
+	// 	fmt.Println("Wrong email", err)
+	// } else {
+	// 	fmt.Println("checked mail for", user)
+	// }
 	//  RoleChecker(admin.User)
 
 	// fmt.Println(c)
 
-	log, err := Login("johndoe@mail.com", "securepassword")
+	log, err := Login("tami@mail.com", "password")
 	if err != nil {
 		var LogError LoginError
 		if errors.As(err, &LogError) {

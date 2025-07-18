@@ -43,14 +43,17 @@ func RoleChecker(role any) {
 
 	switch r := role.(type) {
 	case User:
-		fmt.Println("User", r)
+		fmt.Println(" Welcome, user", r.Name)
 	case Admin:
-		fmt.Println("Admin", r)
+		fmt.Printf("Welcome, Admin %v! ", r.Name)
 	case Editor:
-		fmt.Println("Editor", r)
+		fmt.Println("Editor access granted to ", r.Name)
 	case Viewer:
-		fmt.Println("Viewer", r)
+		fmt.Printf(" Hello %v , you're a viewer", r.Name)
+	default:
+		fmt.Println("Unknown role")
 	}
+
 }
 
 //basic email validation
@@ -68,38 +71,46 @@ func (u User) IsValidEmail(e string) (string, error) {
 }
 
 
-func  IsValidEmail(e User) (string, error) {
-	x := len(e.Email)
+func  IsValidEmail(email string) (string, error) {
+	x := len(email)
 
-	if !strings.Contains(e.Email, "@") || !strings.Contains(e.Email, ".") {
+	if !strings.Contains(email, "@") || !strings.Contains(email, ".") {
 		return "", fmt.Errorf("email must contain '@' and '.'")
 	}
 	if x < 5 {
 		return "", fmt.Errorf(" Email is not valid")
 	} else {
-		return e.Email, nil
+		return email, nil
 	}
 }
 
 //Checking all users and logging them in if cred matches
 // Check for empty fields.
 // Loop through all users to find a matching email.
-
 func Login(email, password string) (string, error){
 
+	email = strings.ToLower(email)
 	if email == "" || password == "" {
 		return "", LoginError{Reason: "Fields cannot be empty, try again!"}
 	}
 
+		//proceed to check valid email
+	_, err := IsValidEmail(email)
+		if err != nil {
+			return "", LoginError{Reason: "Email is wrong"}
+		}
+
 	for _, user := range users{
+		//check if cred matches in slice
 		if email == user.Email{
 			if password == user.Password{
+				RoleChecker(user)
 				return "login sucess", nil
 			}else{
 				return "", LoginError{Reason: "wrong email or password"}
 			}
 		}
-		
 	}
-		return "",  LoginError{Reason: "Email not found"}
+	return "",  LoginError{Reason: "Email not found"}
+
 }
