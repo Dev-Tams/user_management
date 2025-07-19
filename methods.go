@@ -123,3 +123,32 @@ func Login(email, password string) (string, error){
 	return loop, nil
 
 }
+
+
+func LoopOverRole(email, password string) (string, error){
+	for _, u := range db{
+		switch v := u.(type){
+		case Admin:
+			if v.Email == email && v.Password == password {
+				RoleChecker(v)
+				return "login success (Admin)", nil
+			}
+    	case Editor:
+			if v.Email == email && v.Password == password {
+				RoleChecker(v)
+				return "login success (Editor)", nil
+			}
+    	case Viewer:
+			if v.Email == email && v.Password == password {
+				RoleChecker(v)
+				return "login success (Viewer)", nil
+			}
+    	case User:
+			if v.Email == email && v.Password == password {
+				RoleChecker(v)
+				return "login success (User)", nil
+			}
+		}
+	}
+	return "", nil
+}
