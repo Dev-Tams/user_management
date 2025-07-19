@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+
+var db []any
+
+	// Flatten individual entries from each slice into db
+
 func (u User) FullContact() string {
 	return fmt.Sprintf("%v: %v, :%v ", u.ID, u.Name, u.Email)
 }
@@ -24,11 +29,9 @@ func (a Admin) HasPrivilege(privi string) bool {
 }
 
 func (e Editor) CanEditSection(edit string) (bool, error) {
-	for _, ed := range e.Section {
-		if ed == edit {
+	if slices.Contains(e.Section, edit) {
 			return true, nil
 		}
-	}
 	return false, fmt.Errorf(": Unauthorized section")
 }
 
@@ -37,6 +40,18 @@ func (v Viewer) ViewAccess() string {
 }
 
 
+
+func AddtoDb() {
+		for _, u := range users {
+		db = append(db, u)
+	}
+	for _, a := range admins {
+		db = append(db, a)
+	}
+	for _, e := range editors {
+		db = append(db, e)
+	}
+}
 // Uses type switches or type assertions to determine and print what role a user has
 
 func RoleChecker(role any) {
@@ -55,6 +70,7 @@ func RoleChecker(role any) {
 	}
 
 }
+
 
 //basic email validation
 func (u User) IsValidEmail(e string) (string, error) {
@@ -100,17 +116,10 @@ func Login(email, password string) (string, error){
 			return "", LoginError{Reason: "Email is wrong"}
 		}
 
-	for _, user := range users{
-		//check if cred matches in slice
-		if email == user.Email{
-			if password == user.Password{
-				RoleChecker(user)
-				return "login sucess", nil
-			}else{
-				return "", LoginError{Reason: "wrong email or password"}
-			}
+	loop, err := LoopOverRole(email, password)
+		if err != nil{
+			return "",  LoginError{Reason: "Email not found"}
 		}
-	}
-	return "",  LoginError{Reason: "Email not found"}
+	return loop, nil
 
 }

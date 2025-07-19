@@ -6,6 +6,7 @@ type User struct{
 }
 
 type Admin struct{
+	Editor
  	User
 	Privileges [] string
 }
