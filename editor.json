@@ -1,0 +1,1 @@
+[{"Name":"Editor","Email":"editor@mail.com","Password":"password","ID":9,"CanEdit":true,"Section":["Substack","Blog"]},{"Name":"Editor2","Email":"editor2@mail.com","Password":"password","ID":13,"CanEdit":true,"Section":["Substack","Blog"]},{"Name":"Editor3","Email":"editor3@mail.com","Password":"securepassword","ID":8,"CanEdit":true,"Section":["blog"]}]

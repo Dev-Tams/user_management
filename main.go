@@ -1,10 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 )
-
 
 func main() {
 
@@ -45,7 +46,37 @@ func main() {
 		} else {
 			fmt.Println("Generic error", err)
 		}
-	}else{
+	} else {
 		println(log)
 	}
+
+	fileU, err := os.Create("user.json")
+	fileA, err2 := os.Create("admin.json")
+	fileE, err3 := os.Create("editor.json")
+	if err != nil {
+		fmt.Println(" error creating json file")
+		return
+	} else {
+		fmt.Println(" created user file")
+	}
+
+	defer fileU.Close()
+	defer fileA.Close()
+	defer fileE.Close()
+
+
+	encoding := json.NewEncoder(fileU)
+	encoding2 := json.NewEncoder(fileA)
+	encoding3 := json.NewEncoder(fileE)
+
+	
+	err = encoding.Encode(users)
+	err2 = encoding2.Encode(admin)
+	err3 = encoding3.Encode(editors)
+		if err != nil || err2  != nil|| err3 != nil{
+			fmt.Println(" Error encoding json file")
+			return
+		}else{
+			fmt.Println(" Json file encoded successfully")
+		}
 }
