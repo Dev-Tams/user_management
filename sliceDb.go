@@ -1,5 +1,10 @@
 package main
 
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
 
 var users = []User{
 	{Name: "James", Email: "james4pf@mail.com", Password: "securepassword", ID: 8},
@@ -20,7 +25,7 @@ var admins = []Admin{
 		Privileges: []string{"read", "write", "delete"},
 		Editor: Editor{
 			CanEdit: true,
-			Section: []string{ "email", "blog", "substack"},
+			Section: []string{"email", "blog", "substack"},
 		},
 	},
 	{
@@ -65,26 +70,68 @@ var editors = []Editor{
 	},
 }
 
+var user = User{
+	Name: "Tami", Email: "tami@mail.com", Password: "password", ID: 4,
+}
 
+var editor = Editor{
+	User: User{
+		Name: "Editor", Email: "editor@mail.com", ID: 2,
+	},
+	CanEdit: true,
+	Section: []string{"Substack", "Blog"},
+}
 
+var admin = Admin{
+	User: User{
+		Name: "Admin", Email: "admin@mail.com", Password: "adminpass", ID: 2,
+	},
+	Privileges: []string{"read", "write", "delete"},
+}
 
-
-
-	var user =  User{
-		Name: "Tami", Email: "tami@mail.com", Password: "password", ID: 4,
+func WriteToJson(filename string, data any) (string, error) {
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return "", err
 	}
 
-	var editor = Editor{
-		User: User{
-			Name: "Editor", Email: "editor@mail.com", ID: 2,
-		},
-		CanEdit: true,
-		Section: []string{"Substack", "Blog"},
+	defer f.Close()
+
+	encoder := json.NewEncoder(f)
+	err = encoder.Encode(data)
+	encoder.SetIndent("", "  ")
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintln("JSON written to file."), nil
+
+}
+
+func ReadFromJSon(filename string, data any) (string, error) {
+	f, err := os.OpenFile(filename, os.O_RDONLY, 0644)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	decode := json.NewDecoder(f)
+	err = decode.Decode(&data)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("User loaded from JSON: %+v\n, user", data), nil
+}
+
+func BasicMarsh(data any) (string, error) {
+	_, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+	
+	jsonData, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		return "", err
 	}
 
-	var admin = Admin{
-		User: User{
-			Name: "Admin", Email: "admin@mail.com", Password: "adminpass", ID: 2,
-		},
-		Privileges: []string{"read", "write", "delete"},
-	}
+	return fmt.Sprintln(string(jsonData)), nil
+}

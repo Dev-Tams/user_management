@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 )
 
 func main() {
@@ -50,33 +48,29 @@ func main() {
 		println(log)
 	}
 
-	fileU, err := os.Create("user.json")
-	fileA, err2 := os.Create("admin.json")
-	fileE, err3 := os.Create("editor.json")
-	if err != nil {
-		fmt.Println(" error creating json file")
+	mar, err := BasicMarsh(users)
+	if err != nil{
+		fmt.Println("Error with marshalling", err)
+	}else{
+		fmt.Println(mar)
+	}
+	fileU, err := WriteToJson("user.json", users)
+	fileA, err2 := WriteToJson("admin.json", admins)
+	fileE, err3 := WriteToJson("editor.json", editors)
+
+	if err != nil || err2 != nil || err3 != nil {
+		fmt.Println(" Error writing json file")
 		return
 	} else {
-		fmt.Println(" created user file")
+		fmt.Println( &fileA,&fileE, &fileU, " written to Json successfully")
 	}
 
-	defer fileU.Close()
-	defer fileA.Close()
-	defer fileE.Close()
 
-
-	encoding := json.NewEncoder(fileU)
-	encoding2 := json.NewEncoder(fileA)
-	encoding3 := json.NewEncoder(fileE)
-
-	
-	err = encoding.Encode(users)
-	err2 = encoding2.Encode(admin)
-	err3 = encoding3.Encode(editors)
-		if err != nil || err2  != nil|| err3 != nil{
-			fmt.Println(" Error encoding json file")
-			return
-		}else{
-			fmt.Println(" Json file encoded successfully")
-		}
+	fileU, err = ReadFromJSon("user.json", users)
+	if err != nil  {
+		fmt.Println(" Error reading from json file", err)
+		return
+	} else {
+		fmt.Println(fileU)
+	}
 }
