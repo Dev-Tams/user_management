@@ -1,0 +1,10 @@
+Define a struct Product with fields ID int, Name string, Price float64, Tags []string.
+
+Create a slice of a few products.
+
+Marshal it to indented JSON and save to products.json.
+
+Read products.json, unmarshal it back into a slice, and print the products.
+
+Modify the JSON manually to add an extra field and use DisallowUnknownFields to see the error.
+
