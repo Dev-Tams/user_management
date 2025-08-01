@@ -135,3 +135,8 @@ func BasicMarsh(data any) (string, error) {
 
 	return fmt.Sprintln(string(jsonData)), nil
 }
+
+
+func BasicUnMarsh(data []byte, datas any) error{
+	return json.Unmarshal(data, datas)
+}

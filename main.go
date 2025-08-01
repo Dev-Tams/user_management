@@ -49,9 +49,9 @@ func main() {
 	}
 
 	mar, err := BasicMarsh(users)
-	if err != nil{
+	if err != nil {
 		fmt.Println("Error with marshalling", err)
-	}else{
+	} else {
 		fmt.Println(mar)
 	}
 	fileU, err := WriteToJson("user.json", users)
@@ -62,15 +62,26 @@ func main() {
 		fmt.Println(" Error writing json file")
 		return
 	} else {
-		fmt.Println( &fileA,&fileE, &fileU, " written to Json successfully")
+		fmt.Println(&fileA, &fileE, &fileU, " written to Json successfully")
 	}
 
-
 	fileU, err = ReadFromJSon("user.json", users)
-	if err != nil  {
+	if err != nil {
 		fmt.Println(" Error reading from json file", err)
 		return
 	} else {
 		fmt.Println(fileU)
 	}
+
+	pro, err := BasicMarsh(products)
+	if err != nil {
+		fmt.Println("error with slice", err)
+	} else {
+		fmt.Println(pro)
+	}
+
+	WriteToJson("products.json", products)
+	ReadFromJSon("products.json", products)
+	BasicUnMarsh([]byte(pro), &products)
+
 }
