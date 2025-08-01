@@ -84,4 +84,21 @@ func main() {
 	ReadFromJSon("products.json", products)
 	BasicUnMarsh([]byte(pro), &products)
 
+
+
+	var loaded []Product
+	if _, err := ReadFromJSon("products.json", &loaded); err != nil {
+		fmt.Println("error reading from file:", err)
+		return
+	}
+	fmt.Printf("Loaded from file: %+v\n", loaded)
+
+	// Also unmarshal from the earlier string
+	var again []Product
+	if err := BasicUnMarsh([]byte(pro), &again); err != nil {
+		fmt.Println("error unmarshalling from string:", err)
+		return
+	}
+	fmt.Printf("Unmarshalled from string: %+v\n", again)
+
 }
