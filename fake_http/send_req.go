@@ -33,3 +33,5 @@ func SendReq(url string) (string, error) {
 	return string(body), nil
 
 }
+
+

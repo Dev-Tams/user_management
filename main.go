@@ -108,7 +108,12 @@ func main() {
 		return 
 	}
 
+	var todo user.Todo
 	fmt.Println(resp)
-
+	if err := user.BasicUnMarsh([]byte(resp), &todo); err != nil {
+		fmt.Println("error unmarshalling from string:", err)
+		return
+	}
+	fmt.Printf("Unmarshalled from string: %+v\n", todo)
 
 }
