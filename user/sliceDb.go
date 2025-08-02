@@ -1,4 +1,4 @@
-package main
+package user
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var users = []User{
+var Users = []User{
 	{Name: "James", Email: "james4pf@mail.com", Password: "securepassword", ID: 8},
 	{Name: "John", Email: "johndoe@mail.com", Password: "securepassword", ID: 6},
 	{Name: "Doe", Email: "doe@mail.com", Password: "securepassword", ID: 5},
@@ -14,7 +14,7 @@ var users = []User{
 	{Name: "Tesla", Email: "teslamail.com", Password: "securepassword", ID: 7},
 }
 
-var admins = []Admin{
+var Admins = []Admin{
 	{
 		User: User{
 			Name:     "Tami",
@@ -39,7 +39,7 @@ var admins = []Admin{
 	},
 }
 
-var editors = []Editor{
+var Editors = []Editor{
 
 	{
 		User: User{
@@ -70,11 +70,11 @@ var editors = []Editor{
 	},
 }
 
-var user = User{
+var U_user = User{
 	Name: "Tami", Email: "tami@mail.com", Password: "password", ID: 4,
 }
 
-var editor = Editor{
+var E_editor = Editor{
 	User: User{
 		Name: "Editor", Email: "editor@mail.com", ID: 2,
 	},
@@ -82,7 +82,7 @@ var editor = Editor{
 	Section: []string{"Substack", "Blog"},
 }
 
-var admin = Admin{
+var A_admin = Admin{
 	User: User{
 		Name: "Admin", Email: "admin@mail.com", Password: "adminpass", ID: 2,
 	},

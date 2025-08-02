@@ -1,4 +1,4 @@
-package main
+package user
 
 import (
 	// "errors"
@@ -42,13 +42,13 @@ func (v Viewer) ViewAccess() string {
 
 
 func AddtoDb() {
-		for _, u := range users {
+		for _, u := range Users {
 		db = append(db, u)
 	}
-	for _, a := range admins {
+	for _, a := range Admins {
 		db = append(db, a)
 	}
-	for _, e := range editors {
+	for _, e := range Editors {
 		db = append(db, e)
 	}
 }

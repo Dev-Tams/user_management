@@ -1,4 +1,4 @@
-package main
+package user
 
 type User struct{
 	Name, Email, Password string

@@ -1,4 +1,4 @@
-package main
+package user
 
 
 
@@ -9,7 +9,7 @@ type Product struct {
 	Tags  []string
 }
 
-var products = []Product{
+var Products = []Product{
 	{
 		ID: 1, Name: "Rice", Price: 8.56, Tags: []string{"rice", "fast", "parboiled"},
 	},
