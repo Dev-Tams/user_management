@@ -102,18 +102,26 @@ func main() {
 	// fmt.Printf("Unmarshalled from string: %+v\n", again)
 
 	
-	resp, err := request.SendReq("https://jsonplaceholder.typicode.com/todos/1")
+	resp, err := request.GetReq("https://jsonplaceholder.typicode.com/todos/1")
 	if err != nil{
 		fmt.Println("error fetching resource:", err)
 		return 
 	}
 
-	var todo user.Todo
 	fmt.Println(resp)
+	var todo user.Todo
 	if err := user.BasicUnMarsh([]byte(resp), &todo); err != nil {
 		fmt.Println("error unmarshalling from string:", err)
 		return
 	}
 	fmt.Printf("Unmarshalled from string: %+v\n", todo)
 
+	
+	resp1, err := request.PostReq("https://jsonplaceholder.typicode.com/posts", user.Post{})
+	if err != nil{
+		fmt.Println("error fetching resource:", err)
+		return 
+	}
+
+	fmt.Println(resp1)
 }

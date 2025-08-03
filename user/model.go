@@ -28,3 +28,15 @@ type Todo struct{
 	TItle string 	`json:"title"`
 	Completed bool `json:"completed"`
 }
+
+type Post struct{
+	 Title string `json:"title"`
+    Body   string `json:"body"`
+    UserID 	int	   `json:"userId"`
+}
+type CreatePost struct{
+	// ID     int    `json:"id"` 
+    Title  string `json:"title"`
+    Body   string `json:"body"`
+    UserID int    `json:"userId"`
+}
