@@ -2,7 +2,9 @@ package main
 
 import (
 	// "errors"
+	"encoding/json"
 	"fmt"
+
 	"github.com/Dev-Tams/user_management/fake_http"
 	"github.com/Dev-Tams/user_management/user"
 )
@@ -116,12 +118,19 @@ func main() {
 	}
 	fmt.Printf("Unmarshalled from string: %+v\n", todo)
 
+
+	p := user.Post{
+		Title:  "hello",
+		Body:   "world",
+		UserID: 1,
+	}
 	
-	resp1, err := request.PostReq("https://jsonplaceholder.typicode.com/posts", user.Post{})
+	resp1, err := request.PostReq("https://jsonplaceholder.typicode.com/posts", p)
 	if err != nil{
 		fmt.Println("error fetching resource:", err)
 		return 
 	}
 
-	fmt.Println(resp1)
+	b , _:= json.MarshalIndent(resp1, " ", "")
+	fmt.Println(string(b))
 }

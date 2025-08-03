@@ -45,13 +45,13 @@ func PostReq(url string, p user.Post) (*user.CreatePost, error) {
 		return nil, fmt.Errorf(" Error marshalling payload %v", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, "https://jsonplaceholder.typicode.com/posts", bytes.NewReader(payload))
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(payload))
 	if err != nil {
-		return nil, fmt.Errorf(" bad status %v", req.Response)
+		return nil, fmt.Errorf("creating request: %w", err)
 	}
 
 	// set header
-	req.Header.Set("Content-type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{
 		Timeout: 10 * time.Second,
@@ -74,6 +74,7 @@ func PostReq(url string, p user.Post) (*user.CreatePost, error) {
 	if err := json.Unmarshal(body, &createdPost); err != nil {
 		return nil, fmt.Errorf("unmarshalling response body: %w", err)
 	}
+	
 
 	return &createdPost, nil
 }
