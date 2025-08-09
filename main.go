@@ -4,12 +4,25 @@ import (
 	// "errors"
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 
 	"github.com/Dev-Tams/user_management/fake_http"
 	"github.com/Dev-Tams/user_management/user"
 )
 
 func main() {
+
+	//lets spin a server for offline use
+	mux := http.NewServeMux() 
+	mux.HandleFunc("GET /users/", request.GetUserHandler)
+	err := http.ListenAndServe(":8000", mux)
+	if err != nil {
+		log.Fatal(err)
+	}else{
+		fmt.Println("server started")
+	}
+	
 
 	// fmt.Println(user.E_editor.CanEditSection("email"))
 
@@ -103,8 +116,10 @@ func main() {
 	// }
 	// fmt.Printf("Unmarshalled from string: %+v\n", again)
 
+
+
 	
-	resp, err := request.GetReq("https://jsonplaceholder.typicode.com/todos/1")
+	resp, err := request.GetReq("http://localhost:8000/users/")
 	if err != nil{
 		fmt.Println("error fetching resource:", err)
 		return 
