@@ -17,8 +17,8 @@ func main() {
 
 	//lets spin a server for offline use
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /users/", request.GetUserHandler)
-	mux.HandleFunc("POST /users/", request.PostUserHandler)
+	mux.HandleFunc("GET /users/", request.GetUser)
+	mux.HandleFunc("POST /users/", request.PostUser)
 
 	fmt.Println("server starting on :8000...")
 	if err := http.ListenAndServe(":8000", mux); err != nil {
