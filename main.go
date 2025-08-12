@@ -2,10 +2,12 @@ package main
 
 import (
 	// "errors"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/Dev-Tams/user_management/fake_http"
 	"github.com/Dev-Tams/user_management/user"
@@ -14,15 +16,14 @@ import (
 func main() {
 
 	//lets spin a server for offline use
-	mux := http.NewServeMux() 
+	mux := http.NewServeMux()
 	mux.HandleFunc("GET /users/", request.GetUserHandler)
-	err := http.ListenAndServe(":8000", mux)
-	if err != nil {
+	mux.HandleFunc("POST /users/", request.PostUserHandler)
+
+	fmt.Println("server starting on :8000...")
+	if err := http.ListenAndServe(":8000", mux); err != nil {
 		log.Fatal(err)
-	}else{
-		fmt.Println("server started")
 	}
-	
 
 	// fmt.Println(user.E_editor.CanEditSection("email"))
 
@@ -116,13 +117,13 @@ func main() {
 	// }
 	// fmt.Printf("Unmarshalled from string: %+v\n", again)
 
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 
-
-	
-	resp, err := request.GetReq("http://localhost:8000/users/")
-	if err != nil{
+	resp, err := request.GetReq(ctx, "http://localhost:8000/users/")
+	if err != nil {
 		fmt.Println("error fetching resource:", err)
-		return 
+		return
 	}
 
 	fmt.Println(resp)
@@ -133,19 +134,18 @@ func main() {
 	}
 	fmt.Printf("Unmarshalled from string: %+v\n", todo)
 
-
 	p := user.Post{
 		Title:  "hello",
 		Body:   "world",
 		UserID: 1,
 	}
-	
-	resp1, err := request.PostReq("https://jsonplaceholder.typicode.com/posts", p)
-	if err != nil{
+
+	resp1, err := request.PostReq(ctx, "https://jsonplaceholder.typicode.com/posts", p)
+	if err != nil {
 		fmt.Println("error fetching resource:", err)
-		return 
+		return
 	}
 
-	b , _:= json.MarshalIndent(resp1, " ", "")
+	b, _ := json.MarshalIndent(resp1, " ", "")
 	fmt.Println(string(b))
 }

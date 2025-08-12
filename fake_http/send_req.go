@@ -2,6 +2,7 @@ package request
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,12 +12,14 @@ import (
 	"github.com/Dev-Tams/user_management/user"
 )
 
-func GetReq(url string) (string, error) {
+func GetReq(ctx context.Context, url string) (string, error) {
 
 	client := http.Client{
 		Timeout: 10 * time.Second,
 	}
-	resp, err := client.Get(url)
+
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 
@@ -37,7 +40,7 @@ func GetReq(url string) (string, error) {
 
 }
 
-func PostReq(url string, p user.Post) (*user.CreatePost, error) {
+func PostReq(ctx context.Context, url string, p user.Post) (*user.CreatePost, error) {
 
 
 	payload, err := json.Marshal(p)
@@ -45,7 +48,7 @@ func PostReq(url string, p user.Post) (*user.CreatePost, error) {
 		return nil, fmt.Errorf(" Error marshalling payload %v", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(payload))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
