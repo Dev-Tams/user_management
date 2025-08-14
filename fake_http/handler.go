@@ -11,17 +11,45 @@ import (
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
+	  w.Header().Set("Content-Type", "application/json")
 
-	response := map[string]any{
+
+	
+	role := r.URL.Query().Get("role")
+	if role == "" {
+		response := map[string]any{
 		"users":   user.Users,
 		"message": "All users",
 	}
-
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+	return
+		
+	}
+
+	var fUser []user.User
+	for _, u := range user.Users{
+		if u.Role == role{
+			 fUser = append(fUser, u)
+		}
+	}
+	if fUser == nil{
+			http.Error(w, "No User with role found",http.StatusBadRequest )
+			return
+		}
+	
+
+	  response := map[string]any{
+        "users":   fUser,
+        "message": fmt.Sprintf("Users with role '%s'", role),
+    }
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(response)
 }
 
 func PostUser(w http.ResponseWriter, r *http.Request) {
+	  w.Header().Set("Content-Type", "application/json")
+
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -42,6 +70,8 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserById(w http.ResponseWriter, r *http.Request) {
+	  w.Header().Set("Content-Type", "application/json")
+
 
 	idParam := strings.TrimPrefix(r.URL.Path, "/users/")
 	id, err := strconv.Atoi(idParam)

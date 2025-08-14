@@ -7,7 +7,7 @@ import (
 )
 
 var Users = []User{
-	{Name: "James", Email: "james4pf@mail.com", Password: "securepassword", ID: 8},
+	{Name: "James", Email: "james4pf@mail.com", Password: "securepassword", ID: 8, Role: "admin"},
 	{Name: "John", Email: "johndoe@mail.com", Password: "securepassword", ID: 6},
 	{Name: "Doe", Email: "doe@mail.com", Password: "securepassword", ID: 5},
 	{Name: "Mary", Email: "marydoe@mail.com", Password: "securepassword", ID: 9},
