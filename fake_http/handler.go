@@ -43,15 +43,31 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 
 func GetUserById(w http.ResponseWriter, r *http.Request) {
 
-	idParam := strings.TrimPrefix(r.URL.Path, "/users")
+	idParam := strings.TrimPrefix(r.URL.Path, "/users/")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-        http.Error(w, "Inavlid Error", http.StatusBadRequest)
+        http.Error(w, "Inavlid user ID", http.StatusBadRequest)
+		return
 	}
 
+
+	var fUser *user.User
+	for _, u := range user.Users{
+		 if u.ID == id {
+            fUser = &u
+            break
+        }
+	}
+
+	if fUser == nil{
+			http.Error(w, "Can't find user",http.StatusBadRequest )
+			return
+		}
+	
+
 	response := map[string]any{
-		"users":   user.Users,
-		"message": fmt.Sprintf("user %v", id),
+		"user":  fUser,
+		"id": fmt.Sprintf("user %v", id),
 	}
 
 	w.WriteHeader(http.StatusOK)
