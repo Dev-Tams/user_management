@@ -1,0 +1,39 @@
+###
+GET  http://127.0.0.1:8000/users
+Accept: application/json
+Content-Type: application/json
+
+{
+
+}
+
+###
+GET  http://127.0.0.1:8000/users?rol=admin
+Accept: application/json
+Content-Type: application/json
+
+{
+
+}
+
+###
+GET  http://127.0.0.1:8000/users/8
+Accept: application/json
+Content-Type: application/json
+
+{
+
+}
+
+
+###
+POST  http://127.0.0.1:8000/users/
+Accept: application/json
+Content-Type: application/json
+
+{
+ "Name": "Tammy alemu",
+  "Email": "tame",
+  "Password": "",
+  "ID": 0
+}
