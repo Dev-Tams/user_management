@@ -35,5 +35,28 @@ Content-Type: application/json
  "Name": "Tammy alemu",
   "Email": "tame",
   "Password": "",
-  "ID": 0
+  "ID": 1
+}
+
+###
+PUT  http://127.0.0.1:8000/users/6
+Accept: application/json
+Content-Type: application/json
+
+{
+ "Name": "Tammy alemu",
+  "Email": "tamy@mail.com",
+  "Password": "securepass",
+  "Role": "Editor",
+  "ID": 5
+}
+
+
+###
+DELETE http://127.0.0.1:8000/users/8
+Accept: application/json
+Content-Type: application/json
+
+{
+
 }
