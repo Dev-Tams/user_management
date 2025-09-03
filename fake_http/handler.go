@@ -11,7 +11,7 @@ import (
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+
 
 	role := r.URL.Query().Get("role")
 	if role == "" {
@@ -45,7 +45,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -63,13 +63,13 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	 newUser.ID = len(user.Users) + 1
 	user.Users = append(user.Users, newUser)
 
-	w.Header().Set("Content-Type", "application/json")
+
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newUser)
 }
 
 func GetUserById(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+
 
 	idParam := strings.TrimPrefix(r.URL.Path, "/users/")
 	id, err := strconv.Atoi(idParam)
@@ -101,7 +101,7 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 func PutUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+
 
 	if r.Method != http.MethodPut {
 		http.Error(w, "Method not allowed", http.StatusBadRequest)
@@ -152,7 +152,7 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+
 	idParam := strings.TrimPrefix(r.URL.Path, "/users/")
 
 	id, err := strconv.Atoi(idParam)
