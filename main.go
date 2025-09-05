@@ -3,22 +3,39 @@ package main
 import (
 	// "errors"
 	"context"
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/Dev-Tams/user_management/fake_http"
+	_ "github.com/mattn/go-sqlite3"
+
+	request "github.com/Dev-Tams/user_management/fake_http"
 	"github.com/Dev-Tams/user_management/user"
 )
 
+	var db *sql.DB
+	var err error 
 func main() {
 
+	handler := request.Handler{DB: db}
+	db, err = sql.Open("sqlite3", "usersdb")
+	if err != nil{
+		var LogError user.LoginError
+		if errors.As(err, &LogError ){
+			fmt.Println("wrong credentials", LogError)
+		}else{
+			log.Fatal(err)
+		}
+	}
+	defer db.Close()
 	//lets spin a server for offline use
 	mux := http.NewServeMux()
 	logger:= request.Logger(mux)
-	mux.HandleFunc("GET /users/", request.GetUser)
+	mux.HandleFunc("GET /users/", request.handler.GetUser())
 	mux.HandleFunc("GET /users/{id}", request.GetUserById)
 	mux.HandleFunc("POST /users/", request.PostUser)
 	mux.HandleFunc("PUT /users/{id}", request.PutUser)
@@ -28,6 +45,9 @@ func main() {
 	if err := http.ListenAndServe(":8000", logger); err != nil {
 		log.Fatal(err)
 	}
+
+
+	
 
 	// fmt.Println(user.E_editor.CanEditSection("email"))
 

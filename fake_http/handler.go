@@ -1,6 +1,7 @@
 package request
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,8 +11,11 @@ import (
 	"github.com/Dev-Tams/user_management/user"
 )
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+type Handler struct{
+	DB *sql.DB
+}
 
+func (h Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	role := r.URL.Query().Get("role")
 	if role == "" {
@@ -44,8 +48,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func PostUser(w http.ResponseWriter, r *http.Request) {
-
+func PostUser(h Handler) (w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -60,16 +63,26 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	 newUser.ID = len(user.Users) + 1
-	user.Users = append(user.Users, newUser)
+	stmt, err := h.DB.Prepare("INSERT INTO users(name, email, password, role) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+	defer stmt.Close()
 
+	res, err := stmt.Exec(newUser.Name, newUser.Email, newUser.Password, newUser.Role) 
+	if err != nil{
+		http.Error(w, "Insert failed", http.StatusInternalServerError)
+	}
+	
+	id, _ := res.LastInsertId()
+	newUser.ID = int(id)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newUser)
 }
 
 func GetUserById(w http.ResponseWriter, r *http.Request) {
-
 
 	idParam := strings.TrimPrefix(r.URL.Path, "/users/")
 	id, err := strconv.Atoi(idParam)
@@ -101,7 +114,6 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 func PutUser(w http.ResponseWriter, r *http.Request) {
-
 
 	if r.Method != http.MethodPut {
 		http.Error(w, "Method not allowed", http.StatusBadRequest)
@@ -173,7 +185,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user.Users = append(user.Users[:index], user.Users[index+1:]... )
+	user.Users = append(user.Users[:index], user.Users[index+1:]...)
 	w.WriteHeader(http.StatusNoContent)
 
 }
