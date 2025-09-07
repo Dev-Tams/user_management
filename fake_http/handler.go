@@ -48,7 +48,7 @@ func (h Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func PostUser(h Handler) (w http.ResponseWriter, r *http.Request) {
+func (h Handler) PostUser(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -73,6 +73,7 @@ func PostUser(h Handler) (w http.ResponseWriter, r *http.Request) {
 	res, err := stmt.Exec(newUser.Name, newUser.Email, newUser.Password, newUser.Role) 
 	if err != nil{
 		http.Error(w, "Insert failed", http.StatusInternalServerError)
+		return
 	}
 	
 	id, _ := res.LastInsertId()
