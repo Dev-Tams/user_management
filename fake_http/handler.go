@@ -17,33 +17,51 @@ type Handler struct{
 
 func (h Handler) GetUser(w http.ResponseWriter, r *http.Request) {
 
-	role := r.URL.Query().Get("role")
-	if role == "" {
-		response := map[string]any{
-			"users":   user.Users,
-			"message": "All users",
-		}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(response)
-		return
+		role := r.URL.Query().Get("role")
 
-	}
+		var rows *sql.Rows
+		
+
+	  if role == "" {
+        rows, _= h.DB.Query("SELECT id, name, email, role FROM users")
+    } else {
+
+        rows, _ = h.DB.Query("SELECT id, name, email, role FROM users WHERE role = ?", role)
+    }
+
+
+	
+
+	defer rows.Close()
 
 	var fUser []user.User
-	for _, u := range user.Users {
-		if u.Role == role {
-			fUser = append(fUser, u)
-		}
-	}
+    for rows.Next() {
+        var u user.User
+        if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Role); err != nil {
+            http.Error(w, "Scan error: "+err.Error(), http.StatusInternalServerError)
+            return
+        }
+        fUser = append(fUser, u)
+    }
+
 	if fUser == nil {
 		http.Error(w, "No User with role found", http.StatusBadRequest)
 		return
 	}
 
+	if len(fUser) == 0{
+		http.Error(w, "No user found", http.StatusNotFound)
+	}
+
 	response := map[string]any{
 		"users":   fUser,
-		"message": fmt.Sprintf("Users with role '%s'", role),
+		"message": "All Users",
 	}
+
+	  if role != "" {
+        response["message"] = fmt.Sprintf("Users with role '%s'", role)
+    }
+	
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
@@ -83,32 +101,31 @@ func (h Handler) PostUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newUser)
 }
 
-func GetUserById(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetUserById(w http.ResponseWriter, r *http.Request) {
 
+	
 	idParam := strings.TrimPrefix(r.URL.Path, "/users/")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		http.Error(w, "Inavlid user ID", http.StatusBadRequest)
 		return
 	}
+	  var u user.User
+    err = h.DB.QueryRow("SELECT id, name, email, role FROM users WHERE id = ?", id).
+        Scan(&u.ID, &u.Name, &u.Email, &u.Role)
 
-	var fUser *user.User
-	for _, u := range user.Users {
-		if u.ID == id {
-			fUser = &u
-			break
-		}
-	}
+    if err == sql.ErrNoRows {
+        http.Error(w, "User not found", http.StatusNotFound)
+        return
+    } else if err != nil {
+        http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
+        return
+    }
 
-	if fUser == nil {
-		http.Error(w, "Can't find user", http.StatusBadRequest)
-		return
-	}
-
-	response := map[string]any{
-		"user": fUser,
-		"id":   fmt.Sprintf("user %v", id),
-	}
+    response := map[string]any{
+        "user": u,
+        "id":   fmt.Sprintf("user %v", id),
+    }
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)

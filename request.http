@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ###
-GET  http://127.0.0.1:8000/users/8
+GET  http://127.0.0.1:8000/users/3
 Accept: application/json
 Content-Type: application/json
 
@@ -53,7 +53,7 @@ Content-Type: application/json
 
 
 ###
-DELETE http://127.0.0.1:8000/users/8
+DELETE http://127.0.0.1:8000/users/1
 Accept: application/json
 Content-Type: application/json
 

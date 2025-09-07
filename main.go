@@ -36,7 +36,7 @@ func main() {
 	logger := request.Logger(mux)
 
 	mux.HandleFunc("GET /users/", handler.GetUser)
-	mux.HandleFunc("GET /users/{id}", request.GetUserById)
+	mux.HandleFunc("GET /users/{id}", handler.GetUserById)
 	mux.HandleFunc("POST /users/", handler.PostUser)
 	mux.HandleFunc("PUT /users/{id}", request.PutUser)
 	mux.HandleFunc("DELETE /users/{id}", request.DeleteUser)
