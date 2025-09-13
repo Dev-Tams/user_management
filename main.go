@@ -38,8 +38,8 @@ func main() {
 	mux.HandleFunc("GET /users/", handler.GetUser)
 	mux.HandleFunc("GET /users/{id}", handler.GetUserById)
 	mux.HandleFunc("POST /users/", handler.PostUser)
-	mux.HandleFunc("PUT /users/{id}", request.PutUser)
-	mux.HandleFunc("DELETE /users/{id}", request.DeleteUser)
+	mux.HandleFunc("PUT /users/{id}", handler.PutUser)
+	mux.HandleFunc("DELETE /users/{id}", handler.DeleteUser)
 
 	fmt.Println("server started on :8000...")
 	if err := http.ListenAndServe(":8000", logger); err != nil {

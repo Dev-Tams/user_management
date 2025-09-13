@@ -131,7 +131,7 @@ func (h Handler) GetUserById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func PutUser(w http.ResponseWriter, r *http.Request) {
+func (h Handler) PutUser(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPut {
 		http.Error(w, "Method not allowed", http.StatusBadRequest)
@@ -145,31 +145,30 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+
+	r.Body.Close()
 	var updateUser user.User
 	if err := json.NewDecoder(r.Body).Decode(&updateUser); err != nil {
 		http.Error(w, "invalid JSON body", http.StatusBadRequest)
 		return
 	}
 
-	defer r.Body.Close()
-
-	var fUser *user.User
-	for i := range user.Users {
-		if user.Users[i].ID == id {
-			fUser = &user.Users[i]
-			break
-		}
-	}
-
-	if fUser == nil {
-		http.Error(w, "Can't find user", http.StatusBadRequest)
+	_, err = h.DB.Exec("UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?", updateUser.Name, updateUser.Email, updateUser.Password, updateUser.Role, id)
+	if err != nil {
+		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fUser.Email = updateUser.Email
-	fUser.Name = updateUser.Name
-	fUser.Password = updateUser.Password
-	fUser.Role = updateUser.Role
+	var existingUser user.User
+	err = h.DB.QueryRow("SELECT id, name, email, password, role FROM users WHERE id = ?", id).
+		Scan(&existingUser.ID, &existingUser.Name, &existingUser.Email, &existingUser.Password, &existingUser.Role)
+	if err == sql.ErrNoRows {
+		http.Error(w, "Can't find user", http.StatusBadRequest)
+		return
+	} else if err != nil {
+		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	response := map[string]any{
 		"message": "User updated successfully",
@@ -181,7 +180,12 @@ func PutUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (h Handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method != http.MethodDelete{
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
 	idParam := strings.TrimPrefix(r.URL.Path, "/users/")
 
@@ -190,20 +194,17 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid Id", http.StatusBadRequest)
 	}
 
-	index := -1
-	for i := range user.Users {
-		if user.Users[i].ID == id {
-			index = i
-			break
-		}
-	}
-
-	if index == -1 {
-		http.Error(w, "user not found", http.StatusNotFound)
+	res, err := h.DB.Exec("DELETE FROM users WHERE id = ?", id)
+	if err != nil {
+		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	user.Users = append(user.Users[:index], user.Users[index+1:]...)
+	rows, _ := res.RowsAffected()
+	if rows == 0 {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+	
 	w.WriteHeader(http.StatusNoContent)
 
 }
